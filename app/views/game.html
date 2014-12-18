@@ -1,16 +1,18 @@
-<section>
+<section ng-show="board">
   <table id="board">
     <tr class="row" ng-repeat="row in board">
       <td class="space" ng-click="userMove(column.position)" ng-repeat="column in row"><span class="letter">{{column.space}}</span></td>
     </tr>
   </table>
 </section>
-<section>
+<section ng-hide="board">
+  <!-- Game Options 
   <select>
     <option>Me</option>
     <option>Unbeatable AI</option>
   </select>
-  <button>
+  --> 
+  <button ng-click="newGame()">
     Start Game 
   </button>
 </section>

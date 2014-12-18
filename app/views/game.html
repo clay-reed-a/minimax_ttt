@@ -1,7 +1,7 @@
 <section>
   <table id="board">
     <tr class="row" ng-repeat="row in board">
-      <td class="space" ng-click="userMove(column.position)" ng-repeat="column in row">{{column.space}}</td>
+      <td class="space" ng-click="userMove(column.position)" ng-repeat="column in row"><span class="letter">{{column.space}}</span></td>
     </tr>
   </table>
 </section>

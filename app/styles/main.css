@@ -1,23 +1,33 @@
 @import url(http://fonts.googleapis.com/css?family=Coming+Soon);
 
 #board {
-  width: 30em;
-  height: 30em;
+  width: 30rem;
+  height: 30rem;
 }
 
 .row {
-  width: 30em;
-  height: 10em;
-  border-bottom: .25em solid black;
+  width: 30rem;
+  height: 10rem;
+  border-bottom: .25rem solid black;
 }
 
 .space {
-  width: 10em;
-  height: 10em;
-  border-right: .25em solid black;
+  width: 10rem;
+  height: 10rem;
+  border-right: .25rem solid black;
   font-family: "Coming Soon";
-  font-size: 1em;
+  position: relative;
+}
+
+.letter {
+  width: 9rem;
+  height: 9rem;
+  position: absolute;
+  font-size: 6em;
   text-align: center;
+  margin: auto; 
+  top: 0; right: 0; bottom: .075em; /* text sits at bottom of el */
+  left: 0;
 }
 
 .space:nth-child(3), 

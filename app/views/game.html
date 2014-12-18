@@ -1,0 +1,16 @@
+<section>
+  <table id="board">
+    <tr class="row" ng-repeat="row in board">
+      <td class="space" ng-click="userMove(column.position)" ng-repeat="column in row">{{column.space}}</td>
+    </tr>
+  </table>
+</section>
+<section>
+  <select>
+    <option>Me</option>
+    <option>Unbeatable AI</option>
+  </select>
+  <button>
+    Start Game 
+  </button>
+</section>

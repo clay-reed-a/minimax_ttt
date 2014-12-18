@@ -1,16 +1,26 @@
+@import url(http://fonts.googleapis.com/css?family=Coming+Soon);
+
 #board {
   width: 30em;
   height: 30em;
-  background-color: blue;
 }
 
-#board .row {
+.row {
   width: 30em;
   height: 10em;
+  border-bottom: .25em solid black;
 }
 
-#board .row .space {
+.space {
   width: 10em;
   height: 10em;
-  border: .25em solid black;
+  border-right: .25em solid black;
+  font-family: "Coming Soon";
+  font-size: 1em;
+  text-align: center;
+}
+
+.space:nth-child(3), 
+.row:nth-child(3) {
+  border: none;
 }

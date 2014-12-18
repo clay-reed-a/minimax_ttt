@@ -19,5 +19,6 @@ angular.module('tictactoeApp')
       var rowIndex = where.row;
       var colIndex = where.column;
       $scope.board[rowIndex][colIndex].space = 'X';
+      GameLogic.won($scope.board);
     };
   });

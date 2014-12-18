@@ -1,5 +1,5 @@
-@import url(http://fonts.googleapis.com/css?family=Coming+Soon);
-
+/*@import url(http://fonts.googleapis.com/css?family=Coming+Soon);
+*/
 #board {
   width: 30rem;
   height: 30rem;
@@ -15,7 +15,7 @@
   width: 10rem;
   height: 10rem;
   border-right: .25rem solid black;
-  font-family: "Coming Soon";
+/*  font-family: "Coming Soon";*/
   position: relative;
 }
 

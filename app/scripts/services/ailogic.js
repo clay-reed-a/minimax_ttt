@@ -8,6 +8,6 @@
  * Service in the tictactoeApp.
  */
 angular.module('tictactoeApp')
-  .service('aILogic', function () {
+  .factory('AiLogic', function () {
     // AngularJS will instantiate a singleton by calling "new" on this function
   });

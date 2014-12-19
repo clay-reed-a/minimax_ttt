@@ -1,18 +1,13 @@
 'use strict';
 
-describe('Service: aILogic', function () {
+describe('Service: AiLogic', function () {
 
   // load the service's module
   beforeEach(module('tictactoeApp'));
 
   // instantiate service
-  var aILogic;
-  beforeEach(inject(function (_aILogic_) {
-    aILogic = _aILogic_;
+  var AiLogic;
+  beforeEach(inject(function (_AiLogic_) {
+    AiLogic = _AiLogic_;
   }));
-
-  it('should do something', function () {
-    expect(!!aILogic).toBe(true);
-  });
-
 });

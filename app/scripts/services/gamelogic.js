@@ -38,7 +38,7 @@ angular.module('tictactoeApp')
         [{row: 1, column: 0},{row: 1, column: 1},{row: 1, column: 2}],
         [{row: 2, column: 0},{row: 2, column: 1},{row: 2, column: 2}],
         // vertical wins 
-        [{row: 0, column: 0},{row: 1, column: 0},{row: 1, column: 2}],
+        [{row: 0, column: 0},{row: 1, column: 0},{row: 2, column: 0}],
         [{row: 0, column: 1},{row: 1, column: 1},{row: 2, column: 1}],
         [{row: 0, column: 2},{row: 1, column: 2},{row: 2, column: 2}],
         // diagonal wins 
@@ -65,14 +65,14 @@ angular.module('tictactoeApp')
     };
 
     gamelogic.threeInRow = function(cells) {
-      var firstCell = cells[0];
-      if (firstCell !== '') {
-        var secondCell = cells[1], 
-             thirdCell = cells[2];
-        return ((firstCell === secondCell) && (secondCell === thirdCell));
-      } else {
-        return false; 
-      };
+      var firstCell = cells[0], 
+         secondCell = cells[1], 
+          thirdCell = cells[2];
+      return (
+        (firstCell === secondCell) && 
+        (secondCell === thirdCell) &&
+        (firstCell !== '')
+      );
     };
 
     return gamelogic; 

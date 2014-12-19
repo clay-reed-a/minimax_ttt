@@ -21,14 +21,18 @@ describe('Service: AiLogic', function () {
   });
 
   describe('#decideMove', function() {
-    var board;
+    var board,
+        move,
+        moveRow,
+        moveCol;
     beforeEach(function() {
       board = GameLogic.newBoard();
     });
+
     it('should choose center if board is empty', function() {
         // center is the most desirable 
-        var move = AiLogic.decideMove(board);
-        var moveRow = move[0], 
+        move = AiLogic.decideMove(board);
+        moveRow = move[0], 
         moveCol = move[1];
         expect(moveRow).toBe(1);
         expect(moveCol).toBe(1);
@@ -36,9 +40,9 @@ describe('Service: AiLogic', function () {
 
     it('should choose a corner if center is not available', function() {
       board[1][1].space = 'x';
-      var move = AiLogic.decideMove(board);
-      var moveRow = move[0],
-          moveCol = move[1];
+      move = AiLogic.decideMove(board);
+      moveRow = move[0],
+      moveCol = move[1];
       // implementation has upper left first 
       expect(moveRow).toBe(0);
       expect(moveCol).toBe(0);
@@ -55,25 +59,37 @@ describe('Service: AiLogic', function () {
       board[1][2].space = 'o';
       board[2][0].space = 'o';
       board[2][2].space = 'x';
-      var move = AiLogic.decideMove(board);
-      var moveRow = move[0],
-          moveCol = move[1];
+      move = AiLogic.decideMove(board);
+      moveRow = move[0],
+      moveCol = move[1];
       expect(moveRow).toBe(0);
       expect(moveCol).toBe(1);
 
     });
+
     it('should recognize when it can win', function() {
       
       board[0][0].space = 'o';
       board[1][0].space = 'o';
-      board[2][0].space = '';
 
-      var move = AiLogic.decideMove(board);
-      var moveRow = move[0], 
-          moveCol = move[1];
+      move = AiLogic.decideMove(board);
+      moveRow = move[0], 
+      moveCol = move[1];
 
       expect(moveRow).toBe(2);
       expect(moveCol).toBe(0);
+    });
+
+    it('should block other player\'s wins', function() {
+      board[0][0].space = 'o';
+      board[1][1].space = 'o';
+
+      move = AiLogic.decideMove(board);
+      moveRow = move[0],
+      moveCol = move[1];
+
+      expect(moveRow).toBe(2);
+      expect(moveCol).toBe(2);
     });
   });
 });

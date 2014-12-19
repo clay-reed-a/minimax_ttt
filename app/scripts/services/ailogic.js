@@ -12,9 +12,12 @@ angular.module('tictactoeApp')
     var ailogic = {};
 
     ailogic.decideMove = function(board) {
-      var iCanWinHere = this.iHaveTwoInARow(board);
+      var iCanWinHere = this.hasTwoInARow(board, 'o'),
+       theyCanWinHere = this.hasTwoInARow(board, 'x');
       if (iCanWinHere) {
         return iCanWinHere;
+      } if (theyCanWinHere) {
+        return theyCanWinHere; 
       } else {
         return this.chooseLegalMove(board); 
       }
@@ -71,9 +74,8 @@ angular.module('tictactoeApp')
       return countElements.length; 
     }
 
-    ailogic.iHaveTwoInARow = function(board) {
-      var wins = this.allWins(),
-            me = 'o';
+    ailogic.hasTwoInARow = function(board, player) {
+      var wins = this.allWins();
       for (var i = 0; i < wins.length; i++) {
         var win = wins[i];
 
@@ -81,11 +83,10 @@ angular.module('tictactoeApp')
           return board[cell.row][cell.column].space;
         });
 
-        if (this.twoInRow(cells, me)) {
+        if (this.twoInRow(cells, player)) {
           var index = cells.indexOf(''),
                move = [win[index].row, win[index].column];
-          console.log("I have two in a row. I should move: ")
-          console.log(move);
+    
           return move;
         };
       }

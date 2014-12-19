@@ -8,7 +8,7 @@
  * Controller of the tictactoeApp
  */
 angular.module('tictactoeApp')
-  .controller('GameCtrl', function ($scope, GameLogic) {
+  .controller('GameCtrl', function ($scope, GameLogic, AiLogic) {
     $scope.board = null;
 
     $scope.newGame = function() {
@@ -18,7 +18,8 @@ angular.module('tictactoeApp')
     $scope.userMove = function(where) {
       var rowIndex = where.row;
       var colIndex = where.column;
-      $scope.board[rowIndex][colIndex].space = 'X';
+      $scope.board[rowIndex][colIndex].space = 'x';
+      AiLogic.decideMove($scope.board);
       GameLogic.won($scope.board);
     };
   });

@@ -52,7 +52,7 @@ describe('Service: Gamelogic', function () {
       expect(gamelogic.won(board)).toBe(player);
     });
 
-     it('should return the player who won when there is a rightward diagonal win', function(){
+     it('should return the player who won when there is a leftward diagonal win', function(){
       var player = 'x',
           board = gamelogic.newBoard();
       board[0][2].space = player;

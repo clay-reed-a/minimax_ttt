@@ -15,11 +15,23 @@ angular.module('tictactoeApp')
       $scope.board = GameLogic.newBoard(); 
     };
 
+    $scope.aiMove = function(where) {
+      var row = where[0],
+          col = where[1];
+
+       $scope.board[row][col].space = 'o'; 
+    };
+
     $scope.userMove = function(where) {
-      var rowIndex = where.row;
-      var colIndex = where.column;
+      var rowIndex = where.row, 
+          colIndex = where.column;
+      
       $scope.board[rowIndex][colIndex].space = 'x';
-      AiLogic.decideMove($scope.board);
       GameLogic.won($scope.board);
+
+      var response = AiLogic.decideMove($scope.board);
+      $scope.aiMove(response);
+      GameLogic.won($scope.board);
+      
     };
   });

@@ -12,7 +12,34 @@ angular.module('tictactoeApp')
     var ailogic = {};
 
     ailogic.decideMove = function(board) {
-      return this.iHaveTwoInARow(board);
+      var iCanWinHere = this.iHaveTwoInARow(board);
+      if (iCanWinHere) {
+        return iCanWinHere;
+      } else {
+        return chooseLegalMove(board); 
+      }
+    };
+
+    ailogic.chooseLegalMove = function(board) {
+
+
+    };
+
+    ailogic.legalMoves = function() {
+      // legal moves are ordered  
+      // from most to least desirable
+      // 5 > 1 > 3 > 9 > 7 > 2 > 6 > 8 > 4  
+      return [
+        {row: 1, column: 1}, // 5 in Knuth 
+        {row: 0, column: 0}, // 1 in Knuth 
+        {row: 0, column: 2}, // 3 in Knuth 
+        {row: 2, column: 2}, // 9 in Knuth 
+        {row: 2, column: 0}, // 7 in Knuth 
+        {row: 0, column: 1}, // 2 in Knuth 
+        {row: 1, column: 2}, // 6 in Knuth 
+        {row: 2, column: 1}, // 8 in Knuth 
+        {row: 1, column: 0} // 4 in Knuth  
+      ];
     };
 
     ailogic.twoInRow = function(cells, player) {
@@ -33,7 +60,7 @@ angular.module('tictactoeApp')
 
     ailogic.iHaveTwoInARow = function(board) {
       var wins = this.allWins(),
-            me = 'x';
+            me = 'o';
       for (var i = 0; i < wins.length; i++) {
         var win = wins[i];
 

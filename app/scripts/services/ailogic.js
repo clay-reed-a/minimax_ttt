@@ -16,25 +16,38 @@ angular.module('tictactoeApp')
       if (iCanWinHere) {
         return iCanWinHere;
       } else {
-        return chooseLegalMove(board); 
+        return this.chooseLegalMove(board); 
       }
     };
 
     ailogic.chooseLegalMove = function(board) {
-
-
+      var moves = this.legalMoves(), 
+          space_available = false, 
+          move,
+          space;
+      for (var m = 0; m < moves.length; m++) {
+        move = moves[m];
+        space = board[move.row][move.column].space;
+        space_available = space === ''; 
+        if (space_available) {
+          return [move.row, move.column];
+        }
+      }
     };
 
     ailogic.legalMoves = function() {
       // legal moves are ordered  
-      // from most to least desirable
-      // 5 > 1 > 3 > 9 > 7 > 2 > 6 > 8 > 4  
+      // from most to least desirable: 
+      // 5 > 1 >= 3 >= 9 >= 7 > 2 >= 6 >= 8 >= 4  
       return [
+        // center 
         {row: 1, column: 1}, // 5 in Knuth 
+        // corners 
         {row: 0, column: 0}, // 1 in Knuth 
         {row: 0, column: 2}, // 3 in Knuth 
         {row: 2, column: 2}, // 9 in Knuth 
         {row: 2, column: 0}, // 7 in Knuth 
+        // sides 
         {row: 0, column: 1}, // 2 in Knuth 
         {row: 1, column: 2}, // 6 in Knuth 
         {row: 2, column: 1}, // 8 in Knuth 

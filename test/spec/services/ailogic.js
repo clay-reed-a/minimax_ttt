@@ -9,7 +9,7 @@ describe('Service: AiLogic', function () {
   var AiLogic, 
       GameLogic;
   beforeEach(inject(function (_AiLogic_, _GameLogic_) {
-    AiLogic = _AiLogic_;
+    AiLogic = _AiLogic_, 
     GameLogic = _GameLogic_;
   }));
 
@@ -21,14 +21,59 @@ describe('Service: AiLogic', function () {
   });
 
   describe('#decideMove', function() {
+    var board;
+    beforeEach(function() {
+      board = GameLogic.newBoard();
+    });
+    it('should choose center if board is empty', function() {
+        // center is the most desirable 
+        var move = AiLogic.decideMove(board);
+        var moveRow = move[0], 
+        moveCol = move[1];
+        expect(moveRow).toBe(1);
+        expect(moveCol).toBe(1);
+    }); 
+
+    it('should choose a corner if center is not available', function() {
+      board[1][1].space = 'x';
+      var move = AiLogic.decideMove(board);
+      var moveRow = move[0],
+          moveCol = move[1];
+      // implementation has upper left first 
+      expect(moveRow).toBe(0);
+      expect(moveCol).toBe(0);
+    });
+
+    it('should choose a side if corners are not available', function() {
+      // implementation has top side first 
+      /* game situation   
+       where this is possible w/o AI choosing to win */ 
+      board[0][0].space = 'o';
+      board[0][2].space = 'x';
+      board[1][0].space = 'x';
+      board[1][1].space = 'x';
+      board[1][2].space = 'o';
+      board[2][0].space = 'o';
+      board[2][2].space = 'x';
+      var move = AiLogic.decideMove(board);
+      var moveRow = move[0],
+          moveCol = move[1];
+      expect(moveRow).toBe(0);
+      expect(moveCol).toBe(1);
+
+    });
     it('should recognize when it can win', function() {
-      var board = GameLogic.newBoard();
+      
       board[0][0].space = 'o';
       board[1][0].space = 'o';
       board[2][0].space = '';
 
-      expect(AiLogic.decideMove(board)[0]).toBe(2);
-      expect(AiLogic.decideMove(board)[1]).toBe(0);
+      var move = AiLogic.decideMove(board);
+      var moveRow = move[0], 
+          moveCol = move[1];
+
+      expect(moveRow).toBe(2);
+      expect(moveCol).toBe(0);
     });
   });
 });

@@ -27,11 +27,16 @@ angular.module('tictactoeApp')
           colIndex = where.column;
       
       $scope.board[rowIndex][colIndex].space = 'x';
-      GameLogic.won($scope.board);
-
-      var response = AiLogic.decideMove($scope.board);
-      $scope.aiMove(response);
-      GameLogic.won($scope.board);
-      
+      if (GameLogic.won($scope.board)) {
+        console.log('x wins!');
+        $scope.board = null;
+      } else {
+        var response = AiLogic.decideMove($scope.board);
+        $scope.aiMove(response);
+        if (GameLogic.won($scope.board)) {
+          console.log('o wins!');
+          $scope.board = null;
+        }
+      }      
     };
   });

@@ -1,18 +1,31 @@
-<section ng-show="board">
-  <table id="board">
-    <tr class="row" ng-repeat="row in board">
-      <td class="space" ng-click="userMove(column.position)" ng-repeat="column in row"><span class="letter">{{column.space}}</span></td>
-    </tr>
-  </table>
-</section>
-<section ng-hide="board">
-  <!-- Game Options 
-  <select>
-    <option>Me</option>
-    <option>Unbeatable AI</option>
-  </select>
-  --> 
-  <button ng-click="newGame()">
-    Start Game 
-  </button>
-</section>
+
+
+
+  <section class="game-board" ng-show="board">
+    <table id="board">
+      <tr class="row" ng-repeat="row in board">
+        <td class="space" ng-click="userMove(column.position)" ng-repeat="column in row"><span class="letter">{{column.space}}</span></td>
+      </tr>
+    </table>
+  </section>
+  <section class="game-options" ng-hide="board">
+    <label><span>Who Do You Wanna Play?</span>
+
+      <span><input type="radio" checked value="1"> The Unbeatable Robot</span> 
+      <span><input type="radio" value="0"> My So-Called "Friend"</span>
+    </label>
+
+    <label><span>Who Goes First?</span> 
+      <span><input type="radio" value="M" checked> Me</span>
+      <span><input type="radio"  value="T"> Them</span>
+    </label>
+  
+     <label><span>Which One Are They?</span> 
+      <span><input type="radio" value="X"> X</span>
+      <span><input type="radio"  value="O" checked> O</span>
+    </label>
+
+    <a ng-click="newGame()">
+      Start Game 
+    </a>
+  </section>

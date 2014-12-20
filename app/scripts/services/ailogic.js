@@ -13,6 +13,12 @@ angular.module('tictactoeApp')
 
     ailogic.me = 'o'; 
 
+    ailogic.randomElement = function(arr) {
+      var randomIndex = Math.floor(Math.random() * arr.length);
+      console.log(randomIndex);
+      return arr[randomIndex];
+    };
+
     ailogic.decideMove = function(board) {
       var me = this.me;
       var iCanWinHere = this.hasTwoInARow(board, me),
@@ -20,42 +26,55 @@ angular.module('tictactoeApp')
        iCanForkHere = this.spotFork(board, me),
        theyCanForkHere = this.spotFork(board, 'x');
       if (iCanWinHere) {
+        console.log("I have won!");
+        console.log(JSON.stringify(iCanWinHere));
         return iCanWinHere[0];
       } else if (theyCanWinHere) {
         console.log("They are winning!");
+        console.log(JSON.stringify(theyCanWinHere));
         return theyCanWinHere[0]; 
       } else if (iCanForkHere) { 
         console.log("I will win!");
+        console.log(JSON.stringify(iCanForkHere));
         return iCanForkHere[0];
       } else if (theyCanForkHere) {
         console.log("They might fork!");
 
         if (theyCanForkHere.length === 2) {
-          console.log("I am aggressing");
+          console.log("I will get them!");
           var attacks = this.findAgress(board);
-
-          return attacks[0];
+          console.log(JSON.stringify(attacks));
+          return this.randomElement(attacks);
         } else {
-          console.log("I am not aggressing");
+          console.log("I will block them!");
+          console.log(JSON.stringify(theyCanForkHere));
           return theyCanForkHere[0];
         }
       } else {
         console.log("I should move here!");
-        return this.chooseLegalMove(board); 
+        var best_moves = this.chooseLegalMove(board); 
+        console.log(JSON.stringify(best_moves));
+        return this.randomElement(best_moves);
       }
     };
 
     ailogic.chooseLegalMove = function(board) {
-      var moves = this.legalMoves(), 
-          space_available = false, 
-          move,
+      var move_types = this.legalMoves(), 
+          space_available = false,
+          moves_available,
+          move,  
+          move_type,
           space;
-      for (var m = 0; m < moves.length; m++) {
-        move = moves[m];
-        space = board[move.row][move.column].space;
-        space_available = space === ''; 
-        if (space_available) {
-          return [move.row, move.column];
+      for (var t = 0; t < move_types.length; t++) {
+        move_type = move_types[t];
+        moves_available = move_type.filter(function(move) {
+          space = board[move[0]][move[1]].space;
+          space_available = space === '';
+          return space_available;
+        });
+    
+        if (moves_available.length !== 0) {
+          return moves_available;
         }
       }
     };
@@ -66,17 +85,17 @@ angular.module('tictactoeApp')
       // 5 > 1 >= 3 >= 9 >= 7 > 2 >= 6 >= 8 >= 4  
       return [
         // center 
-        {row: 1, column: 1}, // 5 in Knuth 
+        [[1, 1]], // 5 in Knuth 
         // corners 
-        {row: 0, column: 0}, // 1 in Knuth 
-        {row: 0, column: 2}, // 3 in Knuth 
-        {row: 2, column: 2}, // 9 in Knuth 
-        {row: 2, column: 0}, // 7 in Knuth 
+        [[0, 0], // 1 in Knuth 
+         [0, 2], // 3 in Knuth 
+         [2, 2], // 9 in Knuth 
+         [2, 0]], // 7 in Knuth 
         // sides 
-        {row: 0, column: 1}, // 2 in Knuth 
-        {row: 1, column: 2}, // 6 in Knuth 
-        {row: 2, column: 1}, // 8 in Knuth 
-        {row: 1, column: 0} // 4 in Knuth  
+        [[0, 1], // 2 in Knuth 
+         [1, 2], // 6 in Knuth 
+         [2, 1], // 8 in Knuth 
+         [1, 0]] // 4 in Knuth  
       ];
     };
 

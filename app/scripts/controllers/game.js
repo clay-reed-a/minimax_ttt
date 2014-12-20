@@ -16,6 +16,7 @@ angular.module('tictactoeApp')
     };
 
     $scope.aiMove = function(where) {
+
       var row = where[0],
           col = where[1];
 

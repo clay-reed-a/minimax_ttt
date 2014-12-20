@@ -11,23 +11,34 @@ angular.module('tictactoeApp')
   .factory('AiLogic', function () {
     var ailogic = {};
 
+    ailogic.me = 'o'; 
+
     ailogic.decideMove = function(board) {
-      var iCanWinHere = this.hasTwoInARow(board, 'o'),
+      var me = this.me;
+      var iCanWinHere = this.hasTwoInARow(board, me),
        theyCanWinHere = this.hasTwoInARow(board, 'x'), 
-       iCanForkHere = this.spotFork(board, 'o'),
+       iCanForkHere = this.spotFork(board, me),
        theyCanForkHere = this.spotFork(board, 'x');
       if (iCanWinHere) {
-        console.log("I am winning!");
         return iCanWinHere[0];
       } else if (theyCanWinHere) {
         console.log("They are winning!");
         return theyCanWinHere[0]; 
       } else if (iCanForkHere) { 
         console.log("I will win!");
-        return iCanForkHere;
+        return iCanForkHere[0];
       } else if (theyCanForkHere) {
         console.log("They might fork!");
-        return theyCanForkHere;
+
+        if (theyCanForkHere.length === 2) {
+          console.log("I am aggressing");
+          var attacks = this.findAgress(board);
+
+          return attacks[0];
+        } else {
+          console.log("I am not aggressing");
+          return theyCanForkHere[0];
+        }
       } else {
         console.log("I should move here!");
         return this.chooseLegalMove(board); 
@@ -83,7 +94,52 @@ angular.module('tictactoeApp')
         return arrElement === countElement;
       });
       return countElements.length; 
-    }
+    };
+
+    ailogic.considerEmptySpaces = function(board) {
+      var emptySpaces = [], 
+          row, 
+          cell;
+      for (var r = 0; r < board.length; r++) {
+        row = board[r];
+        for(var c = 0; c < row.length; c++) {
+          cell = row[c];
+          if (cell.space === '') {
+            emptySpaces.push(cell.position);
+          }
+        }
+      }
+      return emptySpaces;
+    };
+
+    ailogic.findAgress = function(board) {
+      var emptySpaces = this.considerEmptySpaces(board);
+      var attacks = [];
+
+      for (var e = 0; e < emptySpaces.length; e++) {
+        var emptySpace = emptySpaces[e];
+        var imaginaryBoard = angular.copy(board);
+        imaginaryBoard[emptySpace.row][emptySpace.column].space = this.me;
+        var theyBlock = this.hasTwoInARow(imaginaryBoard, this.me); 
+    
+        if (theyBlock) {
+         
+          for (var b = 0; b < theyBlock.length; b++) {
+            var block = theyBlock[b];
+    
+            imaginaryBoard[block[0]][block[1]].space = 'x';
+            var forcedIntoFork = this.haveFork(imaginaryBoard, 'x');
+            var notForcedIntoFork = !forcedIntoFork;
+            if (notForcedIntoFork) {
+              attacks.push([emptySpace.row, emptySpace.column]);
+            } 
+          }
+
+        }
+      }
+
+      return attacks; 
+    };
 
     ailogic.hasTwoInARow = function(board, player) {
       var wins = this.allWins(),
@@ -109,29 +165,14 @@ angular.module('tictactoeApp')
       }
     };
 
-    ailogic.considerEmptySpaces = function(board) {
-      var emptySpaces = [], 
-          row, 
-          cell;
-      for (var r = 0; r < board.length; r++) {
-        row = board[r];
-        for(var c = 0; c < row.length; c++) {
-          cell = row[c];
-          if (cell.space === '') {
-            emptySpaces.push(cell.position);
-          }
-        }
-      }
-      return emptySpaces;
-    };
-
     ailogic.spotFork = function(board, player) {
       var emptySpaces = this.considerEmptySpaces(board),
           emptySpace, 
           imaginaryBoard, 
                 emptyRow,
                 emptyCol, 
-                    wins;
+                    wins, 
+                   forks = [];
       for (var e = 0; e < emptySpaces.length; e++) {
         emptySpace = emptySpaces[e], 
         imaginaryBoard = angular.copy(board);
@@ -142,10 +183,20 @@ angular.module('tictactoeApp')
         imaginaryBoard[emptyRow][emptyCol].space = player;
         wins = this.hasTwoInARow(imaginaryBoard, player);
         if (wins.length === 2) {
-          return [emptyRow, emptyCol];
+          forks.push([emptyRow, emptyCol]); 
         }
-      } 
-      return false; 
+      }
+      if (forks.length !== 0) {
+
+        return forks;
+      } else {
+        return false; 
+      }
+    };
+
+    ailogic.haveFork = function(board, player) {
+      var sets = this.hasTwoInARow(board, player);
+      return sets.length === 2; 
     };
 
     ailogic.allWins = function() {

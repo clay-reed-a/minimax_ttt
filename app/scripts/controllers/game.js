@@ -31,11 +31,21 @@ angular.module('tictactoeApp')
         console.log('x wins!');
         $scope.board = null;
       } else {
-        var response = AiLogic.decideMove($scope.board);
-        $scope.aiMove(response);
-        if (GameLogic.won($scope.board)) {
-          console.log('o wins!');
+        if (GameLogic.draw($scope.board)) {
+          console.log('nobody wins!');
           $scope.board = null;
+        } else {
+          var response = AiLogic.decideMove($scope.board);
+          $scope.aiMove(response);
+          if (GameLogic.won($scope.board)) {
+            console.log('o wins!');
+            $scope.board = null;
+          } else {
+            if (GameLogic.draw($scope.board)) {
+              console.log('nobody wins!');
+              $scope.board = null;
+            }
+          }
         }
       }      
     };

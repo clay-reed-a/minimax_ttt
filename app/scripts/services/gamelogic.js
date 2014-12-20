@@ -64,6 +64,24 @@ angular.module('tictactoeApp')
       return false; 
     };
 
+    gamelogic.draw = function(board) {
+      var row, 
+         cell, 
+        empty; 
+      for (var r = 0; r < board.length; r++) {
+        row = board[r];
+        for (var c = 0; c < row.length; c++) {
+          cell = row[c];
+          empty = cell.space === ''; 
+          if (empty) {
+            return false; 
+          }
+        }
+      }
+
+      return true; 
+    };
+
     gamelogic.threeInRow = function(cells) {
       var firstCell = cells[0], 
          secondCell = cells[1], 

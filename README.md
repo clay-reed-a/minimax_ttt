@@ -1,6 +1,6 @@
-Angular TicTacToe 
------------------
+Unbeatable TicTacToe 
+--------------------
 
-An in-browser TicTacToe game.
+Tired of winning at TicTacToe? Well [now you can't][link]! 
 
-You'll be pitted against an unbeatable AI. 
+[link]: https://unbeatable-tictactoe.herokuapp.com 

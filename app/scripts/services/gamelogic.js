@@ -52,9 +52,7 @@ angular.module('tictactoeApp')
       for(var i = 0; i < wins.length; i++) {  
         var win = wins[i];
 
-        var cells = win.map(function(cell) {
-          return board[cell.row][cell.column].space;
-        });
+        var cells = this.getCells(board, win);
        
         if (this.threeInRow(cells)) {
           return cells[0];
@@ -62,6 +60,12 @@ angular.module('tictactoeApp')
       }
 
       return false; 
+    };
+
+    gamelogic.getCells = function(board, row) {
+      return row.map(function(cell) {
+        return board[cell.row][cell.column].space; 
+      });
     };
 
     gamelogic.draw = function(board) {

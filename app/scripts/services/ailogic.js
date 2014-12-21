@@ -27,57 +27,56 @@ angular.module('tictactoeApp')
        iCanForkHere = this.spotFork(board, me),
        theyCanForkHere = this.spotFork(board, them);
       if (iCanWinHere) {
-        console.log("I have won!");
+        console.log('I win again!');
 
         return iCanWinHere[0];
       } else if (theyCanWinHere) {
-        console.log("They are winning!");
+        console.log('They can\'t win!');
 
         return theyCanWinHere[0]; 
       } else if (iCanForkHere) { 
-        console.log("I will win!");
+        console.log('I will win!');
 
         return this.randomElement(iCanForkHere);
       } else if (theyCanForkHere) {
-        console.log("They might fork!");
+        console.log('They might fork!');
 
         if (theyCanForkHere.length === 2) {
-          console.log("I will get them!");
+          console.log('I will get them!');
           var attacks = this.findAgress(board);
 
           return this.randomElement(attacks);
         } else {
-          console.log("I will block them!");
+          console.log('I will stop them!');
 
           return theyCanForkHere[0];
         }
       } else {
-        console.log("I should move here!");
-        var best_moves = this.chooseLegalMove(board); 
+        console.log('I\'m gonna go here!');
+        var bestMoves = this.chooseLegalMove(board); 
 
-        return this.randomElement(best_moves);
+        return this.randomElement(bestMoves);
       }
     };
 
     ailogic.chooseLegalMove = function(board) {
-      var move_types = this.legalMoves(), 
-          space_available = false,
-          moves_available,
-          move,  
-          move_type,
-          space;
-      for (var t = 0; t < move_types.length; t++) {
-        move_type = move_types[t];
-        moves_available = move_type.filter(function(move) {
-          space = board[move[0]][move[1]].space;
-          space_available = space === '';
-          return space_available;
-        });
+      var moveTypes = this.legalMoves(), 
+          movesAvailable,  
+          moveType;
+      for (var t = 0; t < moveTypes.length; t++) {
+        moveType = moveTypes[t];
+        movesAvailable = this.getAvailableMoves(moveType, board);
     
-        if (moves_available.length !== 0) {
-          return moves_available;
+        if (movesAvailable.length !== 0) {
+          return movesAvailable;
         }
       }
+    };
+
+    ailogic.getAvailableMoves = function(moveSet, board) {
+      return moveSet.filter(function(move) {
+        return board[move[0]][move[1]].space === '';  
+      });
     };
 
     ailogic.legalMoves = function() {
@@ -167,22 +166,26 @@ angular.module('tictactoeApp')
       for (var i = 0; i < wins.length; i++) {
         var win = wins[i];
 
-        var cells = win.map(function(cell) {
-          return board[cell.row][cell.column].space;
-        });
+        var cells = this.getCells(win, board);
 
         if (this.twoInRow(cells, player)) {
           var index = cells.indexOf(''),
                move = [win[index].row, win[index].column];
 
           movesToWin.push(move);
-        };
+        }
       }
       if (movesToWin.length === 0) {
         return false;  
       } else {
         return movesToWin;
       }
+    };
+
+    ailogic.getCells = function(row, board) {
+      return row.map(function(cell) {
+        return board[cell.row][cell.column].space; 
+      });
     };
 
     ailogic.spotFork = function(board, player) {
@@ -194,10 +197,10 @@ angular.module('tictactoeApp')
                     wins, 
                    forks = [];
       for (var e = 0; e < emptySpaces.length; e++) {
-        emptySpace = emptySpaces[e], 
+        emptySpace = emptySpaces[e]; 
         imaginaryBoard = angular.copy(board);
 
-        emptyRow = emptySpace.row, 
+        emptyRow = emptySpace.row; 
         emptyCol = emptySpace.column;
 
         imaginaryBoard[emptyRow][emptyCol].space = player;

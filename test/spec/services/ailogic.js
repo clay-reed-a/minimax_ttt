@@ -9,7 +9,7 @@ describe('Service: AiLogic', function () {
   var AiLogic, 
       GameLogic;
   beforeEach(inject(function (_AiLogic_, _GameLogic_) {
-    AiLogic = _AiLogic_, 
+    AiLogic = _AiLogic_; 
     GameLogic = _GameLogic_;
   }));
 
@@ -17,16 +17,16 @@ describe('Service: AiLogic', function () {
     it('should return an list of 9 possible legal moves\n'+
       'bucketed into three sets\n'+
       'ordered according to desirablity', function() {
-        var legal_moves_return = AiLogic.legalMoves(); 
-        expect(legal_moves_return.length).toBe(3); 
+        var legalMovesGroups = AiLogic.legalMoves(); 
+        expect(legalMovesGroups.length).toBe(3); 
 
-        var legal_moves = 0;
-        for(var i = 0; i < legal_moves_return.length; i++) {
-     
+        var legalMovesCount = 0;
+        for(var i = 0; i < legalMovesGroups.length; i++) {
+          var legalMovesGroup = legalMovesGroups[i]; 
 
-          legal_moves = legal_moves + legal_moves_return[i].length;  
+          legalMovesCount = legalMovesCount + legalMovesGroup.length;  
         }
-        expect(legal_moves).toBe(9);
+        expect(legalMovesCount).toBe(9);
       });
   });
 
@@ -42,7 +42,7 @@ describe('Service: AiLogic', function () {
     it('should choose center if board is empty', function() {
         // center is the most desirable 
         move = AiLogic.decideMove(board);
-        moveRow = move[0], 
+        moveRow = move[0]; 
         moveCol = move[1];
         expect(moveRow).toBe(1);
         expect(moveCol).toBe(1);
@@ -51,16 +51,16 @@ describe('Service: AiLogic', function () {
     it('should choose a corner if center is not available', function() {
       board[1][1].space = 'x';
       move = AiLogic.decideMove(board);
-      var corner_moves = [[0,0], [0,2], [2,0], [2,2]];
+      var cornerMoves = [[0,0], [0,2], [2,0], [2,2]];
       var found = false; 
 
-      for (var c = 0; c < corner_moves.length; c++) {
-        var corner_move = corner_moves[c];
-        if ((move[0] === corner_move[0]
-                   ) && (
-            move[1] === corner_move[1])) {
+      for (var c = 0; c < cornerMoves.length; c++) {
+        var cornerMove = cornerMoves[c];
+        if ((move[0] === cornerMove[0]) && 
+            (move[1] === cornerMove[1])) 
+        {
 
-                found = true; 
+          found = true; 
         }
       }
       
@@ -88,22 +88,20 @@ describe('Service: AiLogic', function () {
 
 
       move = AiLogic.decideMove(board);
-      moveRow = move[0],
+      moveRow = move[0];
       moveCol = move[1];
-      var either_side = false; 
-      var available_sides = [[0,1],[2,1]]; 
+      var eitherSide = false; 
+      var availableSides = [[0,1],[2,1]]; 
 
-      if (((available_sides[0][0] === moveRow)
-                      &&
-        (available_sides[0][1] === moveCol)) 
-                      ||
-        ((available_sides[1][0] === moveRow)
-                      &&
-        (available_sides[1][1] === moveCol))) {
-        either_side = true; 
+      if (((availableSides[0][0] === moveRow) &&
+           (availableSides[0][1] === moveCol)) ||
+          ((availableSides[1][0] === moveRow) &&
+           (availableSides[1][1] === moveCol))) 
+      {
+        eitherSide = true; 
       }
 
-      expect(either_side).toBe(true);
+      expect(eitherSide).toBe(true);
     });
 
     it('should recognize when it can win', function() {
@@ -112,7 +110,7 @@ describe('Service: AiLogic', function () {
       board[1][0].space = 'o';
 
       move = AiLogic.decideMove(board);
-      moveRow = move[0], 
+      moveRow = move[0]; 
       moveCol = move[1];
 
       expect(moveRow).toBe(2);
@@ -124,7 +122,7 @@ describe('Service: AiLogic', function () {
       board[1][1].space = 'x';
 
       move = AiLogic.decideMove(board);
-      moveRow = move[0],
+      moveRow = move[0];
       moveCol = move[1];
 
       expect(moveRow).toBe(2);

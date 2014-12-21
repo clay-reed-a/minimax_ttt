@@ -25,11 +25,10 @@ angular.module('tictactoeApp')
       
       $scope.playerMark = ($scope.opponentMark === 'x') ? 'o' : 'x';
 
-      if (($scope.goesFirst === 'Them')
-        && 
+      if (($scope.goesFirst === 'Them') && 
           ($scope.opponent === 'human')) {
         var cache = $scope.playerMark;
-        $scope.playerMark = $scope.opponentMark,
+        $scope.playerMark = $scope.opponentMark;
         $scope.opponentMark = cache; 
       }
 
@@ -37,8 +36,7 @@ angular.module('tictactoeApp')
         AiLogic.me = $scope.opponentMark;
         AiLogic.them = $scope.playerMark;  
       }
-      if (($scope.goesFirst === 'Them') 
-        && 
+      if (($scope.goesFirst === 'Them') && 
           ($scope.opponent === 'AI')) {
         var openingMove = AiLogic.decideMove($scope.board);
         $scope.aiMove(openingMove);
@@ -59,7 +57,7 @@ angular.module('tictactoeApp')
       $timeout(function() {
         $scope.board = null;
       }, 3000);
-    } 
+    }; 
 
     $scope.aiMove = function(where) {
 
@@ -97,7 +95,7 @@ angular.module('tictactoeApp')
               }
             } else {
               var cache = $scope.playerMark;
-              $scope.playerMark = $scope.opponentMark,
+              $scope.playerMark = $scope.opponentMark;
               $scope.opponentMark = cache; 
             }
           }

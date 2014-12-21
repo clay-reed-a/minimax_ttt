@@ -8,8 +8,9 @@
  * Controller of the tictactoeApp
  */
 angular.module('tictactoeApp')
-  .controller('GameCtrl', function ($scope, GameLogic, AiLogic) {
+  .controller('GameCtrl', function ($scope, GameLogic, AiLogic, $timeout) {
     $scope.board = null;
+    $scope.announcement = null; 
 
     $scope.opponent = 'AI';
     $scope.goesFirst = 'Me';
@@ -17,6 +18,8 @@ angular.module('tictactoeApp')
     $scope.playerMark = 'o';
 
     $scope.newGame = function() {
+      $scope.announcement = null; 
+      $scope.gameEnded = false; 
       $scope.board = GameLogic.newBoard();
 
       
@@ -42,6 +45,22 @@ angular.module('tictactoeApp')
       }
     };
 
+    $scope.gameEnded = false; 
+
+    $scope.gameEnd = function(winner) {
+      if (winner) {
+        $scope.gameEnded = true; 
+        $scope.announcement = winner+' wins!';
+      } else {
+        $scope.gameEnded = true; 
+        $scope.announcement = 'Nobody wins!'; 
+      }
+
+      $timeout(function() {
+        $scope.board = null;
+      }, 3000);
+    } 
+
     $scope.aiMove = function(where) {
 
       var row = where[0],
@@ -52,38 +71,37 @@ angular.module('tictactoeApp')
 
     $scope.userMove = function(where) {
       var rowIndex = where.row, 
-          colIndex = where.column;
-      
-      $scope.board[rowIndex][colIndex].space = $scope.playerMark;
-      if (GameLogic.won($scope.board)) {
-        console.log($scope.playerMark+' wins!');
-        $scope.board = null;
-      } else {
-        if (GameLogic.draw($scope.board)) {
-          console.log('nobody wins!');
-          $scope.board = null;
+          colIndex = where.column, 
+          winner, 
+          space = $scope.board[rowIndex][colIndex].space;
+
+      if ((space === '') && (!$scope.gameEnded)) {
+        $scope.board[rowIndex][colIndex].space = $scope.playerMark;
+        winner = GameLogic.won($scope.board); 
+        if (winner) {
+          $scope.gameEnd(winner);
         } else {
-          if ($scope.opponent === 'AI') {
-            var response = AiLogic.decideMove($scope.board);
-            $scope.aiMove(response);
-            if (GameLogic.won($scope.board)) {
-              console.log(AiLogic.me+' wins!');
-              $scope.board = null;
-            } else {
-              if (GameLogic.draw($scope.board)) {
-                console.log('nobody wins!');
-                $scope.board = null;
-              }
-            }
+          if (GameLogic.draw($scope.board)) {
+            $scope.gameEnd();
           } else {
-
-            var cache = $scope.playerMark;
-            $scope.playerMark = $scope.opponentMark,
-            $scope.opponentMark = cache; 
-
-    
+            if ($scope.opponent === 'AI') {
+              var response = AiLogic.decideMove($scope.board);
+              $scope.aiMove(response);
+              winner = GameLogic.won($scope.board); 
+              if (winner) {
+                $scope.gameEnd(winner);
+              } else {
+                if (GameLogic.draw($scope.board)) {
+                  $scope.gameEnd();
+                }
+              }
+            } else {
+              var cache = $scope.playerMark;
+              $scope.playerMark = $scope.opponentMark,
+              $scope.opponentMark = cache; 
+            }
           }
-        }
+        }   
       }      
     };
   });

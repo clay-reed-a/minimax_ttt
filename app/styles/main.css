@@ -36,7 +36,7 @@ aside.leftmargin {
 }
 
 div.holes {
-  background-image: radial-gradient(#120f06 12px, transparent 15px);
+  background-image: radial-gradient(#e8dbb6 12px, transparent 15px);
   background-size: 450px 450px;
   background-position: 0 0;
   width: 450px;
@@ -73,6 +73,12 @@ footer.bottommargin {
   position: absolute;
   bottom: 1px;
   height: 32px;
+}
+
+.annoucement {
+  font-size: 3.5rem;
+  height: 3rem;
+  text-indent: 13rem;
 }
 
 #board {

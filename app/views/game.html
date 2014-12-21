@@ -2,6 +2,7 @@
 
 
   <section class="game-board" ng-show="board">
+    <p class="annoucement">{{announcement}}</p>
     <table id="board">
       <tr class="row" ng-repeat="row in board">
         <td class="space" ng-click="userMove(column.position)" ng-repeat="column in row"><span class="letter">{{column.space}}</span></td>

@@ -112,6 +112,7 @@ footer.bottommargin {
   left: 0;
 }
 
+.last, 
 .space:nth-child(3), 
 .row:nth-child(3) {
   border: none;

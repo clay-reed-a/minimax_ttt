@@ -104,4 +104,8 @@ angular.module('tictactoeApp')
         }   
       }      
     };
+
+    $scope.isLast = function(check) {
+      return check ? 'last' : null;   
+    };
   });

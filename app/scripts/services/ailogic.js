@@ -44,7 +44,7 @@ angular.module('tictactoeApp')
         if (theyCanForkHere.length > 1) {
           console.log('I will get them!');
           var attacks = this.findAgress(board);
-
+          console.log(JSON.stringify(attacks)); 
           return this.randomElement(attacks);
         } else {
           console.log('I will stop them!');

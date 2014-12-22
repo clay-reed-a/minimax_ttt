@@ -122,12 +122,12 @@ section.game-options {
   font-size: 2em;
 }
 
-label, 
-label span {
+ 
+div.unbeatable-label span {
   display: block;
 }
 
-label {
+div.unbeatable-label {
   margin: 1em 0;
 }
 

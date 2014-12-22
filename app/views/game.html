@@ -10,21 +10,21 @@
     </table>
   </section>
   <section class="game-options" ng-hide="board">
-    <label><span>Who Do You Wanna Play?</span>
+    <div class="unbeatable-label"><span>Who Do You Wanna Play?</span>
 
       <span><input type="radio" ng-model="opponent" value="AI"> The Unbeatable Robot</span> 
       <span><input type="radio" ng-model="opponent" value="human"> My So-Called "Friend"</span>
-    </label>
+    </div>
 
-    <label><span>Who Goes First?</span> 
+    <div class="unbeatable-label"><span>Who Goes First?</span> 
       <span><input type="radio" ng-model="goesFirst" value="Me"> Me</span>
       <span><input type="radio"  ng-model="goesFirst" value="Them"> Them</span>
-    </label>
+    </div>
   
-     <label><span>Which One Are They?</span> 
+     <div class="unbeatable-label"><span>Which One Are They?</span> 
       <span><input type="radio" ng-model="opponentMark" value="x"> X</span>
       <span><input type="radio"  ng-model="opponentMark" value="o"> O</span>
-    </label>
+    </div>
 
     <a ng-click="newGame()">
       Start Game 

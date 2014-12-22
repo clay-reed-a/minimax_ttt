@@ -40,8 +40,8 @@ angular.module('tictactoeApp')
         return this.randomElement(iCanForkHere);
       } else if (theyCanForkHere) {
         console.log('They might fork!');
-
-        if (theyCanForkHere.length === 2) {
+ 
+        if (theyCanForkHere.length > 1) {
           console.log('I will get them!');
           var attacks = this.findAgress(board);
 

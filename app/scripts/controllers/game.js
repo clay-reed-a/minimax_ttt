@@ -39,6 +39,7 @@ angular.module('tictactoeApp')
       if (($scope.goesFirst === 'Them') && 
           ($scope.opponent === 'AI')) {
         var openingMove = AiLogic.decideMove($scope.board);
+
         $scope.aiMove(openingMove);
       }
     };
@@ -61,8 +62,8 @@ angular.module('tictactoeApp')
 
     $scope.aiMove = function(where) {
 
-      var row = where[0],
-          col = where[1];
+      var row = where.row,
+          col = where.column;
 
        $scope.board[row][col].space = $scope.opponentMark; 
     };

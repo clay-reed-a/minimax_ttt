@@ -14,50 +14,69 @@ angular.module('tictactoeApp')
     ailogic.them = 'x';
     ailogic.me = 'o'; 
 
+    ailogic.printBoard = function(board) {
+      var rowStringArr = [];
+      var rowCells = this.getRowCells(board);
+      for (var r = 0; r < rowCells.length; r++) {
+        var row = rowCells[r].join('|');
+        rowStringArr.push(row); 
+      }
+
+      var board = rowStringArr.join('\n-----\n');
+      console.log(board);
+
+    };
+
     
     ailogic.max = function(arr) {
-      max_el = Math.max.apply(null, arr);
+      var max_el = Math.max.apply(null, arr);
       return arr.indexOf(max_el);
     };
 
     ailogic.min = function(arr) {
-      min_el = Math.min.apply(null, arr);
+      var min_el = Math.min.apply(null, arr);
       return arr.indexOf(min_el);
     };
 
     ailogic.decideMove = function(board) {
       var me = this.me;
-      return this.minimax(board, me)[1];
+      var r = this.minimax(board, me, 6);
+      return r[1]; 
     };
 
-    ailogic.minimax = function(board, turnPlayer) {
+    ailogic.minimax = function(board, turnPlayer, depth) {
 
       var wonGame = this.won(board); 
       var availableMoves = this.getAvailableMoves(board); 
       var noMoves = availableMoves.length === 0; 
+      
       var endGameConditions = wonGame || noMoves; 
       var playerFlip = this.flipPlayer(turnPlayer);
       var scores = [];
       var moves = [];
 
-      if (endGameConditions) {
+      if (endGameConditions || !depth) {
         return [this.score(wonGame)]; 
       }
 
       for (var a = 0; a < availableMoves.length; a++) {
         var move = availableMoves[a]; 
         var imaginaryBoard = angular.copy(board); 
-        var evaluation = this.minimax(board, playerFlip);
+        imaginaryBoard[move.row][move.column].space = turnPlayer;
+        this.printBoard(imaginaryBoard);
+        var evaluation = this.minimax(imaginaryBoard, playerFlip, depth-1);
         scores.push(evaluation[0]);
-        moves.push(evaluation[1]);
+        moves.push(move);
       }
 
       if (turnPlayer === this.me) {
+
         var max_idx = this.max(scores);
         var max = scores[max_idx]; 
         var choice = moves[max_idx]; 
         return [max, choice]; 
       } else {
+ 
         var min_idx = this.min(scores);
         var min = scores[min_idx];
         var choice = moves[min_idx];
@@ -75,9 +94,9 @@ angular.module('tictactoeApp')
     ailogic.score = function(wonGame, currentPlayer) {
       if (wonGame) {
         if (wonGame == currentPlayer) {
-          return Number.POSITIVE_INFINITY; 
+          return 10; 
         } else {
-          return Number.NEGATIVE_INFINITY; 
+          return -10; 
         }
       } else {
         return 0;  
@@ -106,7 +125,7 @@ angular.module('tictactoeApp')
       for(var i = 0; i < wins.length; i++) {  
         var win = wins[i];
 
-        var cells = this.getCells(board, win);
+        var cells = this.getWinCells(board, win);
        
         if (this.threeInRow(cells)) {
           return cells[0];
@@ -116,10 +135,29 @@ angular.module('tictactoeApp')
       return false; 
     };
 
-    ailogic.getCells = function(board, win) {
+    ailogic.getWinCells = function(board, win) {
       return win.map(function(cell) {
         return board[cell.row][cell.column].space; 
       });
+    };
+
+    ailogic.getRowCells = function(board) {
+      var rowsCells = [];
+      for (var r = 0; r < board.length; r++) {
+        var row = board[r];
+        var rowArr = [];
+        for(var c = 0; c < board.length; c++) {
+          var cell = row[c];
+          if (cell.space) {
+            rowArr.push(cell.space);
+          } else {
+            rowArr.push(' ');
+          }
+          
+        }
+        rowsCells.push(rowArr);
+      }
+      return rowsCells;
     };
 
     ailogic.threeInRow = function(cells) {

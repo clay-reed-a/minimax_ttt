@@ -67,8 +67,6 @@ angular.module('tictactoeApp')
 
     ailogic.decideMove = function(board) {
       var flatBoard = this.flattenBoardData(board);
-      var bestMoveValue = -100;
-      var move = null; 
       var moves = [];
       for (var c = 0; c < flatBoard.length; c++) {
         var cell = flatBoard[c];
@@ -79,19 +77,14 @@ angular.module('tictactoeApp')
           imaginaryBoard[c] = this.me; 
           // what they will do if I move there? 
           var moveValue = this.imaginaryMoveThem(imaginaryBoard);
-          // if this move is the best I've thought of 
+          // Push my evaluation of this move to the moves array 
           moves.push(moveValue);
-          if (moveValue > bestMoveValue) {
-            bestMoveValue = moveValue;
-            move = c;
-          }
         } else {
           moves.push(null);
         }
       }
       
-      // I'll use the best move I've thought of... 
-      // or pick randomly from ones I judge to be of the same value  
+      // Pick randomly from moves judged to be the best   
       var randomMove = this.randomEquivalentMove(moves);
       return this.formatMoveData(randomMove); 
     };

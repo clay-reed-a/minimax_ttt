@@ -55,8 +55,9 @@ angular.module('tictactoeApp')
           var imaginaryBoard = angular.copy(flatBoard); 
           imaginaryBoard[c] = this.me; 
           // what they will do if I move there? 
-          var moveValue = this.moveThem(imaginaryBoard);
+          var moveValue = this.imaginaryMoveThem(imaginaryBoard);
           // if this move is the best I've thought of 
+
           if (moveValue > bestMoveValue) {
             bestMoveValue = moveValue;
             move = c;
@@ -67,7 +68,7 @@ angular.module('tictactoeApp')
       return this.formatMoveData(move); 
     };
 
-    ailogic.moveThem = function(board) {
+    ailogic.imaginaryMoveThem = function(board) {
       var draw = this.drawn(board);
       var iWin = this.won(board, this.me);
       var theyWin = this.won(board, this.them); 
@@ -87,11 +88,17 @@ angular.module('tictactoeApp')
             var imaginaryBoard = angular.copy(board);
             imaginaryBoard[c] = this.them;
             // when they move there.  
-            var availableMoveValue = this.moveMe(imaginaryBoard);
+            var availableMoveValue = this.imaginaryMoveMe(imaginaryBoard);
             // If this move is bad for me 
+  
             if (availableMoveValue < bestMoveValue) {
               // they will do it.  
               bestMoveValue = availableMoveValue;
+            }
+            // If this move allows them to win,
+            if (availableMoveValue === -1) {
+              // they will do it. 
+              break 
             }
           }
         }
@@ -99,7 +106,7 @@ angular.module('tictactoeApp')
       }
     };
 
-    ailogic.moveMe = function(board) {
+    ailogic.imaginaryMoveMe = function(board) {
       var draw = this.drawn(board);
       var iWon = this.won(board, this.me);
       var theyWon = this.won(board, this.them);
@@ -118,10 +125,15 @@ angular.module('tictactoeApp')
             var imaginaryBoard = angular.copy(board);
             imaginaryBoard[c] = this.me;
             // what can they do? 
-            var availableMoveValue = this.moveThem(imaginaryBoard);
+            var availableMoveValue = this.imaginaryMoveThem(imaginaryBoard);
             // Choose the move in which they can do the least. 
             if (availableMoveValue > bestMoveValue) {
               bestMoveValue = availableMoveValue;
+            }
+            // If I can win w/ this move 
+            if (availableMoveValue === 1) {
+              // let me win! 
+              break 
             }
           }
         }

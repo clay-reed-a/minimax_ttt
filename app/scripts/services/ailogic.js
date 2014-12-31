@@ -14,177 +14,137 @@ angular.module('tictactoeApp')
     ailogic.them = 'x';
     ailogic.me = 'o'; 
 
-    ailogic.printBoard = function(board) {
-      var rowStringArr = [];
-      var rowCells = this.getRowCells(board);
-      for (var r = 0; r < rowCells.length; r++) {
-        var row = rowCells[r].join('|');
-        rowStringArr.push(row); 
+
+    ailogic.formatMoveData = function(move) {
+      return [
+        {row: 0, column: 0},
+        {row: 0, column: 1},
+        {row: 0, column: 2},
+        {row: 1, column: 0},
+        {row: 1, column: 1},
+        {row: 1, column: 2},
+        {row: 2, column: 0},
+        {row: 2, column: 1},
+        {row: 2, column: 2} 
+      ][move];
+
+    };
+
+    ailogic.flattenBoardData = function(board) {
+      var flattenedBoard = [];
+      for (var r = 0; r < board.length; r++) {
+        var row = board[r];
+        for (var c = 0; c < row.length; c++) {
+          var cell = row[c];
+          flattenedBoard.push(cell.space);
+        }
       }
-
-      var boardStr = rowStringArr.join('\n-----\n');
-      console.log(boardStr);
-
+      return flattenedBoard;
     };
 
     ailogic.decideMove = function(board) {
+      var flatBoard = this.flattenBoardData(board);
       var bestMoveValue = -100;
       var move = null; 
-      var availableMoves = this.getAvailableMoves(board);
- 
-      for (var a = 0; a < availableMoves.length; a++) {
-        var availableMove = availableMoves[a];
-        var imaginaryBoard = angular.copy(board);
-        imaginaryBoard[availableMove.row][availableMove.column].space = this.me;
-        var availableMoveValue = this.minValue(imaginaryBoard);
-        if (availableMoveValue > bestMoveValue) {
-          bestMoveValue = availableMoveValue;
-          move = availableMove;
+
+      for (var c = 0; c < flatBoard.length; c++) {
+        var cell = flatBoard[c];
+        // if I can move there 
+        if (cell === '') {
+          // I will imagine 
+          var imaginaryBoard = angular.copy(flatBoard); 
+          imaginaryBoard[c] = this.me; 
+          // what they will do if I move there? 
+          var moveValue = this.moveThem(imaginaryBoard);
+          // if this move is the best I've thought of 
+          if (moveValue > bestMoveValue) {
+            bestMoveValue = moveValue;
+            move = c;
+          }
         }
       }
-      return move; 
+      // I'll use the best move I've thought of 
+      return this.formatMoveData(move); 
     };
 
-    ailogic.minValue = function(board) {
-      var availableMoves = this.getAvailableMoves(board);
-      var winner = this.won(board); 
-      if (winner === this.me) {
+    ailogic.moveThem = function(board) {
+      var draw = this.drawn(board);
+      var iWin = this.won(board, this.me);
+      var theyWin = this.won(board, this.them); 
+      if (iWin) {
         return 1;
-      } else if (winner === this.them) {
+      } else if (theyWin) {
         return -1; 
-      } else if (availableMoves.length === 0) {
+      } else if (draw) {
         return 0; 
       } else {
         var bestMoveValue = 100; 
-        for (var a = 0; a < availableMoves.length; a++) {
-          var availableMove = availableMoves[a];
-          var imaginaryBoard = angular.copy(board);
-          imaginaryBoard[availableMove.row][availableMove.column].space = this.them;
-          var availableMoveValue = this.maxValue(imaginaryBoard);
-          if (availableMoveValue < bestMoveValue) {
-            bestMoveValue = availableMoveValue;
-
+        for (var c = 0; c < board.length; c++) {
+          var cell = board[c];
+          // If they can move there 
+          if (cell === '') {
+            // imagine what it'll be like for me 
+            var imaginaryBoard = angular.copy(board);
+            imaginaryBoard[c] = this.them;
+            // when they move there.  
+            var availableMoveValue = this.moveMe(imaginaryBoard);
+            // If this move is bad for me 
+            if (availableMoveValue < bestMoveValue) {
+              // they will do it.  
+              bestMoveValue = availableMoveValue;
+            }
           }
         }
-        return bestMoveValue; 
+        return bestMoveValue;
       }
     };
 
-    ailogic.maxValue = function(board) {
-      var availableMoves = this.getAvailableMoves(board);
-      var winner = this.won(board);
-      if (winner === this.me) {
+    ailogic.moveMe = function(board) {
+      var draw = this.drawn(board);
+      var iWon = this.won(board, this.me);
+      var theyWon = this.won(board, this.them);
+      if (iWon) {
         return 1; 
-      } else if (winner === this.them) {
+      } else if (theyWon) {
         return -1;
-      } else if (availableMoves.length === 0) {
+      } else if (draw) {
         return 0; 
       } else {
         var bestMoveValue = -100; 
-        for (var a = 0; a < availableMoves.length; a++) {
-          var availableMove = availableMoves[a];
-          var imaginaryBoard = angular.copy(board);
-          imaginaryBoard[availableMove.row][availableMove.column].space = this.me;
-          var availableMoveValue = this.minValue(imaginaryBoard);
-          if (availableMoveValue > bestMoveValue) {
-            bestMoveValue = availableMoveValue;
+        for (var c = 0; c < board.length; c++) {
+          var cell = board[c];
+          // If I move there 
+          if (cell === '') {
+            var imaginaryBoard = angular.copy(board);
+            imaginaryBoard[c] = this.me;
+            // what can they do? 
+            var availableMoveValue = this.moveThem(imaginaryBoard);
+            // Choose the move in which they can do the least. 
+            if (availableMoveValue > bestMoveValue) {
+              bestMoveValue = availableMoveValue;
+            }
           }
         }
         return bestMoveValue; 
       }
     };
     
-
-    ailogic.flipPlayer = function(player) {
-      if (player === 'x') {
-        return 'o'; 
-      } else {
-        return 'x'; 
-      }
-    };
-
-    ailogic.getAvailableMoves = function(board) {
-      var availableMoves = [];
-      for (var r = 0; r < board.length; r++) {
-        var row = board[r];
-        for (var c = 0; c < row.length; c++) {
-          var cell = row[c];
-          var cellIsEmpty = cell.space === '';  
-          if (cellIsEmpty) {
-            availableMoves.push(cell.position);
-          } 
-        }
-      }
-      return availableMoves;
-    };
-
-
-
-    ailogic.won = function(board) {
-      var wins = this.allWins();
-      for(var i = 0; i < wins.length; i++) {  
-        var win = wins[i];
-
-        var cells = this.getWinCells(board, win);
-       
-        if (this.threeInRow(cells)) {
-          return cells[0];
-        }
-      }
-
-      return false; 
-    };
-
-    ailogic.getWinCells = function(board, win) {
-      return win.map(function(cell) {
-        return board[cell.row][cell.column].space; 
+    ailogic.drawn = function(flatBoard) {
+      // it is a draw when there is nowhere left to move 
+      return flatBoard.every(function(cell) {
+        return (cell !== '');
       });
     };
 
-    ailogic.getRowCells = function(board) {
-      var rowsCells = [];
-      for (var r = 0; r < board.length; r++) {
-        var row = board[r];
-        var rowArr = [];
-        for(var c = 0; c < board.length; c++) {
-          var cell = row[c];
-          if (cell.space) {
-            rowArr.push(cell.space);
-          } else {
-            rowArr.push(' ');
-          }
-          
-        }
-        rowsCells.push(rowArr);
-      }
-      return rowsCells;
-    };
-
-    ailogic.threeInRow = function(cells) {
-      var firstCell = cells[0], 
-         secondCell = cells[1], 
-          thirdCell = cells[2];
-      return (
-        (firstCell === secondCell) && 
-        (secondCell === thirdCell) &&
-        (firstCell !== '')
-      );
-    };
-
-    ailogic.allWins = function() {
-      return [
-        // horizontal wins  
-        [{row: 0, column: 0},{row: 0, column: 1},{row: 0, column: 2}],
-        [{row: 1, column: 0},{row: 1, column: 1},{row: 1, column: 2}],
-        [{row: 2, column: 0},{row: 2, column: 1},{row: 2, column: 2}],
-        // vertical wins 
-        [{row: 0, column: 0},{row: 1, column: 0},{row: 2, column: 0}],
-        [{row: 0, column: 1},{row: 1, column: 1},{row: 2, column: 1}],
-        [{row: 0, column: 2},{row: 1, column: 2},{row: 2, column: 2}],
-        // diagonal wins 
-        [{row: 0, column: 0},{row: 1, column: 1},{row: 2, column: 2}],
-        [{row: 0, column: 2},{row: 1, column: 1},{row: 2, column: 0}]  
-      ];
+    ailogic.won = function(flatBoard, player) {
+      return (((flatBoard[0] === player) && (flatBoard[1] === player) && (flatBoard[2] === player)) ||
+      ((flatBoard[3] === player) && (flatBoard[4] === player) && (flatBoard[5] === player)) ||
+      ((flatBoard[6] === player) && (flatBoard[7] === player) && (flatBoard[8] === player)) ||
+      ((flatBoard[0] === player) && (flatBoard[3] === player) && (flatBoard[6] === player)) ||
+      ((flatBoard[1] === player) && (flatBoard[4] === player) && (flatBoard[7] === player)) ||
+      ((flatBoard[2] === player) && (flatBoard[5] === player) && (flatBoard[8] === player)) ||
+      ((flatBoard[0] === player) && (flatBoard[4] === player) && (flatBoard[8] === player)) ||
+      ((flatBoard[2] === player) && (flatBoard[4] === player) && (flatBoard[6] === player)));
     };
 
     return ailogic; 

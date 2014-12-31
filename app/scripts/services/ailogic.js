@@ -42,11 +42,34 @@ angular.module('tictactoeApp')
       return flattenedBoard;
     };
 
+    ailogic.max = function(arr) {
+      return Math.max.apply(null, arr);
+    }
+
+    ailogic.equivalentMoves = function(arr) {
+      var maxEl = this.max(arr);
+      return arr.map(function(move, idx) {
+        if (move === maxEl) {
+          return idx; 
+        } else {
+          return null; 
+        }
+      }).filter(function(el) {
+        return (el !== null); 
+      }); 
+    };
+
+    ailogic.randomEquivalentMove = function(arr) {
+      var equivalentMoves = this.equivalentMoves(arr);
+      var randomIndex = Math.floor(Math.random() * equivalentMoves.length);
+      return equivalentMoves[randomIndex];
+    };
+
     ailogic.decideMove = function(board) {
       var flatBoard = this.flattenBoardData(board);
       var bestMoveValue = -100;
       var move = null; 
-
+      var moves = [];
       for (var c = 0; c < flatBoard.length; c++) {
         var cell = flatBoard[c];
         // if I can move there 
@@ -57,15 +80,20 @@ angular.module('tictactoeApp')
           // what they will do if I move there? 
           var moveValue = this.imaginaryMoveThem(imaginaryBoard);
           // if this move is the best I've thought of 
-
+          moves.push(moveValue);
           if (moveValue > bestMoveValue) {
             bestMoveValue = moveValue;
             move = c;
           }
+        } else {
+          moves.push(null);
         }
       }
-      // I'll use the best move I've thought of 
-      return this.formatMoveData(move); 
+      
+      // I'll use the best move I've thought of... 
+      // or pick randomly from ones I judge to be of the same value  
+      var randomMove = this.randomEquivalentMove(moves);
+      return this.formatMoveData(randomMove); 
     };
 
     ailogic.imaginaryMoveThem = function(board) {

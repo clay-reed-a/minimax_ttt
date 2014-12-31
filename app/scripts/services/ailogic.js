@@ -22,84 +22,84 @@ angular.module('tictactoeApp')
         rowStringArr.push(row); 
       }
 
-      var board = rowStringArr.join('\n-----\n');
-      console.log(board);
+      var boardStr = rowStringArr.join('\n-----\n');
+      console.log(boardStr);
 
-    };
-
-    
-    ailogic.max = function(arr) {
-      var max_el = Math.max.apply(null, arr);
-      return arr.indexOf(max_el);
-    };
-
-    ailogic.min = function(arr) {
-      var min_el = Math.min.apply(null, arr);
-      return arr.indexOf(min_el);
     };
 
     ailogic.decideMove = function(board) {
-      var me = this.me;
-      var r = this.minimax(board, me, 6);
-      return r[1]; 
-    };
-
-    ailogic.minimax = function(board, turnPlayer, depth) {
-
-      var wonGame = this.won(board); 
-      var availableMoves = this.getAvailableMoves(board); 
-      var noMoves = availableMoves.length === 0; 
-      
-      var endGameConditions = wonGame || noMoves; 
-      var playerFlip = this.flipPlayer(turnPlayer);
-      var scores = [];
-      var moves = [];
-
-      if (endGameConditions || !depth) {
-        return [this.score(wonGame)]; 
-      }
-
-      for (var a = 0; a < availableMoves.length; a++) {
-        var move = availableMoves[a]; 
-        var imaginaryBoard = angular.copy(board); 
-        imaginaryBoard[move.row][move.column].space = turnPlayer;
-        this.printBoard(imaginaryBoard);
-        var evaluation = this.minimax(imaginaryBoard, playerFlip, depth-1);
-        scores.push(evaluation[0]);
-        moves.push(move);
-      }
-
-      if (turnPlayer === this.me) {
-
-        var max_idx = this.max(scores);
-        var max = scores[max_idx]; 
-        var choice = moves[max_idx]; 
-        return [max, choice]; 
-      } else {
+      var bestMoveValue = -100;
+      var move = null; 
+      var availableMoves = this.getAvailableMoves(board);
  
-        var min_idx = this.min(scores);
-        var min = scores[min_idx];
-        var choice = moves[min_idx];
-        return [min, choice];
+      for (var a = 0; a < availableMoves.length; a++) {
+        var availableMove = availableMoves[a];
+        var imaginaryBoard = angular.copy(board);
+        imaginaryBoard[availableMove.row][availableMove.column].space = this.me;
+        var availableMoveValue = this.minValue(imaginaryBoard);
+        if (availableMoveValue > bestMoveValue) {
+          bestMoveValue = availableMoveValue;
+          move = availableMove;
+        }
+      }
+      return move; 
+    };
+
+    ailogic.minValue = function(board) {
+      var availableMoves = this.getAvailableMoves(board);
+      var winner = this.won(board); 
+      if (winner === this.me) {
+        return 1;
+      } else if (winner === this.them) {
+        return -1; 
+      } else if (availableMoves.length === 0) {
+        return 0; 
+      } else {
+        var bestMoveValue = 100; 
+        for (var a = 0; a < availableMoves.length; a++) {
+          var availableMove = availableMoves[a];
+          var imaginaryBoard = angular.copy(board);
+          imaginaryBoard[availableMove.row][availableMove.column].space = this.them;
+          var availableMoveValue = this.maxValue(imaginaryBoard);
+          if (availableMoveValue < bestMoveValue) {
+            bestMoveValue = availableMoveValue;
+
+          }
+        }
+        return bestMoveValue; 
       }
     };
+
+    ailogic.maxValue = function(board) {
+      var availableMoves = this.getAvailableMoves(board);
+      var winner = this.won(board);
+      if (winner === this.me) {
+        return 1; 
+      } else if (winner === this.them) {
+        return -1;
+      } else if (availableMoves.length === 0) {
+        return 0; 
+      } else {
+        var bestMoveValue = -100; 
+        for (var a = 0; a < availableMoves.length; a++) {
+          var availableMove = availableMoves[a];
+          var imaginaryBoard = angular.copy(board);
+          imaginaryBoard[availableMove.row][availableMove.column].space = this.me;
+          var availableMoveValue = this.minValue(imaginaryBoard);
+          if (availableMoveValue > bestMoveValue) {
+            bestMoveValue = availableMoveValue;
+          }
+        }
+        return bestMoveValue; 
+      }
+    };
+    
 
     ailogic.flipPlayer = function(player) {
-      if (player === 'x')
+      if (player === 'x') {
         return 'o'; 
-      if (player === 'o')
-        return 'x'; 
-    };
-
-    ailogic.score = function(wonGame, currentPlayer) {
-      if (wonGame) {
-        if (wonGame == currentPlayer) {
-          return 10; 
-        } else {
-          return -10; 
-        }
       } else {
-        return 0;  
+        return 'x'; 
       }
     };
 

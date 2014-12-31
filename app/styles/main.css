@@ -1,5 +1,7 @@
 @import url(https://fonts.googleapis.com/css?family=Coming+Soon);
 @import url(https://fonts.googleapis.com/css?family=UnifrakturCook:700);
+@import url(http://fonts.googleapis.com/css?family=Black+Ops+One);
+
 
 * {
   margin: 0;
@@ -59,6 +61,14 @@ h1.margin-title {
   font-size: 50px;
   padding-left: 15px;
   font-family: 'UnifrakturCook'; 
+}
+
+h2.stamp {
+  position: absolute;
+  top: 85px;
+  right: 320px;
+  color: red;
+  font-family: 'Black Ops One';
 }
 
 main {

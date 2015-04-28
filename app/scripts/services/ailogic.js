@@ -44,7 +44,7 @@ angular.module('tictactoeApp')
 
     ailogic.max = function(arr) {
       return Math.max.apply(null, arr);
-    }
+    };
 
     ailogic.equivalentMoves = function(arr) {
       var maxEl = this.max(arr);
@@ -119,7 +119,7 @@ angular.module('tictactoeApp')
             // If this move allows them to win,
             if (availableMoveValue === -1) {
               // they will do it. 
-              break 
+              break; 
             }
           }
         }
@@ -154,7 +154,7 @@ angular.module('tictactoeApp')
             // If I can win w/ this move 
             if (availableMoveValue === 1) {
               // let me win! 
-              break 
+              break; 
             }
           }
         }
